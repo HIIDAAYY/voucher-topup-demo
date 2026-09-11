@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# GacorStore — Demo Top Up Voucher Game (Tahap 1)
 
-## Getting Started
+Demo web top-up voucher game bergaya DrianStore. Ini demo **Tahap 1**: seluruh alur (pilih game,
+isi data akun, pilih nominal, checkout, cek transaksi) berjalan penuh secara mock — **tanpa**
+payment gateway sungguhan dan **tanpa** API provider H2H sungguhan. Data game/harga statis di
+`data/seed.ts`; transaksi disimpan di React Context + `localStorage` (tanpa database sungguhan).
 
-First, run the development server:
+## Menjalankan secara lokal
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Buka [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Menjalankan test
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run test
+```
 
-## Learn More
+Unit test menutupi logika murni: `formatRupiah`, `generateOrderCode` (`lib/format.test.ts`) dan
+`isAccountValid` (`lib/orderLogic.test.ts`).
 
-To learn more about Next.js, take a look at the following resources:
+## Build produksi
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run build
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Alur inti untuk dicoba (5 langkah)
 
-## Deploy on Vercel
+1. Buka `/produk/mobile-legends`, klik salah satu kartu nominal **sebelum** mengisi ID+Server →
+   muncul pesan "Silahkan isi data akun terlebih dahulu.".
+2. Isi ID+Server, pilih nominal, klik **Pesan Sekarang!** → diarahkan ke halaman checkout.
+3. Pilih metode bayar (QRIS/Virtual Account) → muncul instruksi bayar dengan kode order unik.
+4. Klik tombol **[DEV] Simulasikan Pembayaran Berhasil** → status berubah
+   Menunggu Pembayaran → Diproses → Berhasil (otomatis, tanpa reload).
+5. Buka `/cek-transaksi`, masukkan kode order tadi → detail transaksi muncul. Coba kode asal-asalan
+   → muncul pesan "Transaksi tidak ditemukan." (bukan error/crash).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Di luar scope demo ini
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Payment gateway sungguhan, API provider H2H sungguhan (Digiflazz atau sejenis), autentikasi
+sungguhan, database sungguhan, dan fitur Live Streaming/Voucher/Joki yang benar-benar berjalan
+(ketiganya berlabel "Segera" di homepage).
