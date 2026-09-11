@@ -1,18 +1,22 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { getGameBySlug, getPriceVariantsForGame } from '@/data/seed'
 import { isAccountValid } from '@/lib/orderLogic'
 import { useToast } from '@/components/shared/Toast'
+import { useTransactions } from '@/context/TransactionContext'
 import { AccountForm } from '@/components/product/AccountForm'
 import { PriceGroup } from '@/components/product/PriceGroup'
+import { ProductSidebar } from '@/components/product/ProductSidebar'
 import type { PriceVariant } from '@/lib/types'
 
 export default function ProductPage() {
   const params = useParams<{ game: string }>()
+  const router = useRouter()
   const game = getGameBySlug(params.game)
   const { showToast } = useToast()
+  const { createOrder } = useTransactions()
 
   const [accountId, setAccountId] = useState('')
   const [server, setServer] = useState('')
@@ -51,6 +55,18 @@ export default function ProductPage() {
     setSelected(variant)
   }
 
+  function handleOrder() {
+    if (!accountValid || !selected) return
+    const order = createOrder({
+      gameSlug: game!.slug,
+      gameName: game!.name,
+      accountId,
+      server: game!.requiresServer ? server : undefined,
+      item: { name: selected.name, price: selected.price },
+    })
+    router.push(`/checkout/${order.code}`)
+  }
+
   return (
     <main className="mx-auto max-w-6xl px-4 py-8">
       <h1 className="text-2xl font-semibold">{game.name}</h1>
@@ -78,7 +94,12 @@ export default function ProductPage() {
             </div>
           </div>
         </div>
-        {/* Sidebar added in Task 8 */}
+        <ProductSidebar
+          game={game}
+          selected={selected}
+          accountValid={accountValid}
+          onOrder={handleOrder}
+        />
       </div>
     </main>
   )
