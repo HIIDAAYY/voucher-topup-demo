@@ -1,47 +1,32 @@
-# GacorStore — Demo Top Up Voucher Game (Tahap 1)
+# Demo Top-Up Voucher Game
 
-Demo web top-up voucher game bergaya DrianStore. Ini demo **Tahap 1**: seluruh alur (pilih game,
-isi data akun, pilih nominal, checkout, cek transaksi) berjalan penuh secara mock — **tanpa**
-payment gateway sungguhan dan **tanpa** API provider H2H sungguhan. Data game/harga statis di
-`data/seed.ts`; transaksi disimpan di React Context + `localStorage` (tanpa database sungguhan).
+Demo web top-up voucher game. Alur lengkapnya bisa dicoba (pilih game, isi ID akun, pilih nominal, checkout, cek transaksi), tapi semuanya berjalan dengan data tiruan: tanpa payment gateway, tanpa API provider, dan tanpa database. Data game dan harga ada di `data/seed.ts`, transaksi disimpan di React Context dan `localStorage`.
 
-## Menjalankan secara lokal
+## Menjalankan
 
 ```bash
 npm install
 npm run dev
 ```
 
-Buka [http://localhost:3000](http://localhost:3000).
+Buka http://localhost:3000.
 
-## Menjalankan test
+## Test
 
 ```bash
 npm run test
 ```
 
-Unit test menutupi logika murni: `formatRupiah`, `generateOrderCode` (`lib/format.test.ts`) dan
-`isAccountValid` (`lib/orderLogic.test.ts`).
+Unit test mencakup `formatRupiah`, `generateOrderCode` (`lib/format.test.ts`), dan `isAccountValid` (`lib/orderLogic.test.ts`).
 
-## Build produksi
+## Alur untuk dicoba
 
-```bash
-npm run build
-```
+1. Buka `/produk/mobile-legends`, klik nominal sebelum mengisi ID dan Server. Muncul peringatan untuk mengisi data akun.
+2. Isi ID dan Server, pilih nominal, klik **Pesan Sekarang**. Halaman pindah ke checkout.
+3. Pilih QRIS atau Virtual Account. Muncul instruksi bayar dengan kode order.
+4. Klik **[DEV] Simulasikan Pembayaran Berhasil**. Status berubah dari Menunggu Pembayaran ke Diproses lalu Berhasil.
+5. Buka `/cek-transaksi` dan masukkan kode order. Detail transaksi muncul. Kode yang salah menampilkan "Transaksi tidak ditemukan."
 
-## Alur inti untuk dicoba (5 langkah)
+## Belum termasuk
 
-1. Buka `/produk/mobile-legends`, klik salah satu kartu nominal **sebelum** mengisi ID+Server →
-   muncul pesan "Silahkan isi data akun terlebih dahulu.".
-2. Isi ID+Server, pilih nominal, klik **Pesan Sekarang!** → diarahkan ke halaman checkout.
-3. Pilih metode bayar (QRIS/Virtual Account) → muncul instruksi bayar dengan kode order unik.
-4. Klik tombol **[DEV] Simulasikan Pembayaran Berhasil** → status berubah
-   Menunggu Pembayaran → Diproses → Berhasil (otomatis, tanpa reload).
-5. Buka `/cek-transaksi`, masukkan kode order tadi → detail transaksi muncul. Coba kode asal-asalan
-   → muncul pesan "Transaksi tidak ditemukan." (bukan error/crash).
-
-## Di luar scope demo ini
-
-Payment gateway sungguhan, API provider H2H sungguhan (Digiflazz atau sejenis), autentikasi
-sungguhan, database sungguhan, dan fitur Live Streaming/Voucher/Joki yang benar-benar berjalan
-(ketiganya berlabel "Segera" di homepage).
+Payment gateway, integrasi provider (misalnya Digiflazz), login, database, dan fitur yang masih berlabel "Segera" di halaman utama.
